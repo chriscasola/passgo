@@ -1,6 +1,7 @@
 package passgo
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -17,5 +18,21 @@ func TestPassGo(t *testing.T) {
 
 	if Verify([]byte("WRONG password"), result) {
 		t.Error("Password should not verify")
+	}
+}
+
+func TestLimits(t *testing.T) {
+	password := make([]byte, 257)
+
+	_, err := rand.Read(password)
+
+	if err != nil {
+		t.Error("Error generating test password")
+	}
+
+	_, err = Hash(password)
+
+	if err == nil {
+		t.Error("Should prevent long password")
 	}
 }
