@@ -11,6 +11,8 @@ const iterationCount = 30000
 const keySize = 32
 const saltSize = 16
 
+// HashedPassword contains a password hash along with the salt
+// and other metadata about the hash.
 type HashedPassword struct {
 	IterationCount int
 	Salt           []byte
@@ -18,6 +20,8 @@ type HashedPassword struct {
 	Alg            string
 }
 
+// Hash generates a HashedPassword from the given plain-text
+// password.
 func Hash(password []byte) (*HashedPassword, error) {
 	// generate salt
 	salt := make([]byte, saltSize)
@@ -32,6 +36,8 @@ func Hash(password []byte) (*HashedPassword, error) {
 	return &HashedPassword{IterationCount: iterationCount, Salt: salt, Hash: derivedKey, Alg: "sha256"}, nil
 }
 
+// Verify check if the given plain-text password hashes to the
+// same value as HashedPassword
 func Verify(password []byte, hashed *HashedPassword) bool {
 	derivedKey := pbkdf2.Key(password, hashed.Salt, hashed.IterationCount, len(hashed.Hash), sha256.New)
 
